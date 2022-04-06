@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS Drum Kit</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 
@@ -58,9 +60,30 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-
+  
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`); // Event is associated to corresponding data-key value
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`); // Same as above, but select class key(.key)
+    if(!audio) return; // Stop the function from running when no sound is assigned to a key
+    audio.currentTime = 0; // Rewind to start of the sound when new key hit
+    audio.play();
+    key.classList.add('playing'); // Assign a new CSS '.playing' class to key / alternatively key.addClass.('playing') [jQuery] 
+  }
+  
+  function removeTransition(e) { // Returns the key visuals to initial CSS state
+    if (e.propertyName !== 'transform') return; // Skip if not a 'transform' CSS property
+    this.classList.remove('playing'); // Remove the CSS class / 'this' being the key
+  }
+  
+  const keys = document.querySelectorAll('keys'); // Listens to all events from all keys
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  
+  // Was at the top to start with: listens for any keydown on the page:
+  window.addEventListener('keydown', playSound);
+  
 </script>
 
 
 </body>
+
 </html>
